@@ -1,7 +1,7 @@
 #!/bin/bash
-# 配置你的 github 账号
-git config --global user.name "xxinjie21"
-git config --global user.email "xxinjie21@163.com"
+# 配置本仓库的 github 账号（仅仓库级，不污染全局 git 配置）
+git config user.name "xxinjie21"
+git config user.email "xxinjie21@163.com"
 
 # 定位仓库根目录
 BASE_DIR=$(dirname "$0")/..
