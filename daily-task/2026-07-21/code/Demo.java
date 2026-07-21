@@ -1,3 +1,5 @@
+// 编译运行：javac --release 17 Demo.java && java Demo
+// 目标：Java 17 兼容（已用 javac --release 17 验证通过，字节码定为 17）
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
