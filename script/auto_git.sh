@@ -1,4 +1,5 @@
 #!/bin/bash
+# 依赖 Git Bash 环境（需 bash 及 GNU 工具 date 等）；本地与 WorkBuddy 执行时均使用 Git Bash
 # 配置本仓库的 github 账号（仅仓库级，不污染全局 git 配置）
 git config user.name "xxinjie21"
 git config user.email "xxinjie21@163.com"
