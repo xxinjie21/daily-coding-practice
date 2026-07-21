@@ -4,7 +4,7 @@
 
 ## 仓库说明
 
-1. `source-doc`：后端面试原始题库两份 PDF
+1. `source-doc`：手动放入的 Markdown（.md）后端面试题库，自动化每日读取抽题
 2. `daily-task`：每日独立刷题文件夹，**一题一个目录**，包含原题、架构分析、可运行 Java 代码、线上踩坑总结
 3. `weekly-summary`：每周自动汇总本周所有面试知识点
 4. `script`：自动化 Git 提交脚本
@@ -17,7 +17,7 @@
 
 ```
 daily-coding-practice/
-├── source-doc/                # 后端面试 PDF 原始题库
+├── source-doc/                # 手动放入的 Markdown 题库（.md），自动化读取抽题
 ├── daily-task/                # WorkBuddy 自动生成的每日题目目录
 │   └── 2026-07-21/            # 每日独立文件夹（一天一题）
 │       ├── question.md         # 原题原文
@@ -33,7 +33,7 @@ daily-coding-practice/
 
 ## 本地使用
 
-将两份后端面试 PDF 放入 `source-doc/` 后，每日 21:00 自动化任务会自动抽题、生成四件套并提交推送。
+把你的后端面试题库以 `.md` 文档放进 `source-doc/`（格式见该目录下的 `格式说明.md`），每日 21:00 自动化任务会自动读取、随机抽一道未生成过的题，生成四件套并提交推送。
 
 如需手动提交当日题目：
 
