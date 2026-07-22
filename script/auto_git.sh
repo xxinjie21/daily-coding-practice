@@ -18,8 +18,15 @@ if [ ! -d "$TARGET_DIR" ]; then
     exit 0
 fi
 
+# 从 question.md 首行提取题目标题（去掉开头的 # 号），用于提交信息一目了然
+if [ -f "$TARGET_DIR/question.md" ]; then
+    TITLE=$(head -n 1 "$TARGET_DIR/question.md" | sed 's/^#* *//')
+else
+    TITLE="后端面试题完整实现"
+fi
+
 # 提交当日刷题目录
 git add "$TARGET_DIR" source-doc/
-git commit -m "daily-coding：$TODAY 后端面试题完整实现"
+git commit -m "daily-coding：$TODAY $TITLE"
 git push origin main
-echo "已完成自动推送：$TARGET_DIR"
+echo "已完成自动推送：$TARGET_DIR（$TITLE）"
