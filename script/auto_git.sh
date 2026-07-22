@@ -10,13 +10,16 @@ cd "$BASE_DIR" || exit 1
 
 # 获取当日日期
 TODAY=$(date +%Y-%m-%d)
-TARGET_DIR="daily-task/$TODAY"
 
-# 判断今日文件夹是否生成，无则跳过提交
-if [ ! -d "$TARGET_DIR" ]; then
+# 按日期前缀定位今日刷题目录（文件夹名形如 2026-07-22-题目标述，兼容旧版纯日期命名）
+shopt -s nullglob
+dirs=(daily-task/${TODAY}*)
+shopt -u nullglob
+if [ ${#dirs[@]} -eq 0 ]; then
     echo "今日刷题文件夹不存在，无需提交"
     exit 0
 fi
+TARGET_DIR="${dirs[0]}"
 
 # 从 question.md 首行提取题目标题（去掉开头的 # 号），用于提交信息一目了然
 if [ -f "$TARGET_DIR/question.md" ]; then
