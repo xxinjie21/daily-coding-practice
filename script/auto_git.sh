@@ -21,8 +21,11 @@ if [ ${#dirs[@]} -eq 0 ]; then
 fi
 TARGET_DIR="${dirs[0]}"
 
-# 从 question.md 首行提取题目标题（去掉开头的 # 号），用于提交信息一目了然
-if [ -f "$TARGET_DIR/question.md" ]; then
+# 从 题解.md 首行提取题目标题（去掉开头的 # 号），用于提交信息一目了然
+# 兼容旧格式：没有 题解.md 时回退读 question.md
+if [ -f "$TARGET_DIR/题解.md" ]; then
+    TITLE=$(head -n 1 "$TARGET_DIR/题解.md" | sed 's/^#* *//')
+elif [ -f "$TARGET_DIR/question.md" ]; then
     TITLE=$(head -n 1 "$TARGET_DIR/question.md" | sed 's/^#* *//')
 else
     TITLE="后端面试题完整实现"
