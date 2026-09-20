@@ -33,6 +33,21 @@ fi
 
 # 提交当日刷题目录
 git add "$TARGET_DIR" source-doc/
-git commit -m "daily-coding：$TODAY $TITLE"
-git push origin main
-echo "已完成自动推送：$TARGET_DIR（$TITLE）"
+if git diff --cached --quiet; then
+    # 没有暂存内容时跳过 commit，避免 "nothing to commit" 报错干扰后续判断
+    echo "暂无可提交的改动（今日内容可能已经提交过）"
+else
+    git commit -m "daily-coding：$TODAY $TITLE"
+fi
+
+# 推送：必须显式指定「只使用 store 凭据助手」并关闭一切交互式提示。
+# 原因：本机同时存在 store 与 Git for Windows 的凭据选择器（git-credential-helper-selector），
+# 无人值守运行时它会弹出选择菜单等待输入，导致 push 永久挂起（不会报错，也不会超时）。
+# 凭据已保存在 ~/.git-credentials，store 助手可直接读取，无需任何人工输入。
+if GIT_TERMINAL_PROMPT=0 GCM_INTERACTIVE=never \
+   timeout 180 git -c credential.helper= -c credential.helper=store push origin main; then
+    echo "已完成自动推送：$TARGET_DIR（$TITLE）"
+else
+    echo "自动推送失败（退出码 $?）：本地提交已生成，请人工检查网络与凭据后手动推送" >&2
+    exit 1
+fi
