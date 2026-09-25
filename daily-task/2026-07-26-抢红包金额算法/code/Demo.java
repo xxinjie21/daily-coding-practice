@@ -57,6 +57,12 @@ public class Demo {
             // 例：还剩 5000 分、9 个人 -> 上限 = 5000 / 9 * 2 ≈ 1111 分
             int max = leftAmount / leftPeople * 2;
 
+            // 如果这是最后一个参与随机的人（此时只剩 2 人），上限要收一收：
+            // 至少给最后那位留 1 分。否则前面这人正好取满，最后一个人就只能拿 0 元。
+            if (leftPeople == 2) {
+                max = Math.max(1, Math.min(max, leftAmount - 1));
+            }
+
             // 在 [1分, max] 之间随机取一个数。用 Math.max 兜底，保证最少抢到 1 分，
             // 避免有人抢到 0 元的尴尬。
             int amount = Math.max(1, random.nextInt(max) + 1);

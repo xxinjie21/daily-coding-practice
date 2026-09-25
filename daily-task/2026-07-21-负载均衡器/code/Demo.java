@@ -1,6 +1,6 @@
 // ============================================================
 // 负载均衡器 Demo（Java 17）
-// 编译运行：javac --release 17 Demo.java && java Demo
+// 编译运行：javac -encoding UTF-8 --release 17 Demo.java && java Demo
 //
 // 【这个程序在干嘛？】
 // 想象银行有 3 个窗口（服务器），客户（请求）来了要分到某个窗口。

@@ -138,7 +138,9 @@ public class Demo {
         System.out.println("  塞完 " + redisList.size() + " 条，下面开始 blpop（阻塞取）：");
 
         while (!redisList.isEmpty()) {
-            // pollLast 对应 Redis 的 blpop：队列空时会阻塞等着，来一条取一条
+            // pollLast 对应 Redis 的 blpop（都是从队列另一头取）。
+            // 区别在于：真实的 blpop 在队列空时会「阻塞」等着，来一条就取一条；
+            // 这里为了演示简单，用 pollLast 非阻塞取，靠外面的 isEmpty 判断什么时候停下来。
             String orderNo = redisList.pollLast();
             handlePaymentCallback(orderNo, "Redis队列");
         }

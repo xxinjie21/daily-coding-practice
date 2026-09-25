@@ -1,6 +1,6 @@
 // ============================================================
 // 关联表 vs 冗余字段 Demo（Java 17）
-// 编译运行：javac --release 17 Demo.java && java Demo
+// 编译运行：javac -encoding UTF-8 --release 17 Demo.java && java Demo
 //
 // 【这个程序在干嘛？】
 // 设计数据库表时，两个表要"关联"起来有两种常见做法：

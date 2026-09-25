@@ -23,13 +23,13 @@ public class Demo {
         private final Map<String, String> store = new ConcurrentHashMap<>();
         void down() { available = false; }      // 模拟宕机
         boolean isAvailable() { return available; }
-        String get(String k) {
+        String get(String key) {
             if (!available) throw new IllegalStateException("Redis 挂了");
-            return store.get(k);
+            return store.get(key);
         }
-        void set(String k, String v) {
+        void set(String key, String value) {
             if (!available) throw new IllegalStateException("Redis 挂了");
-            store.put(k, v);
+            store.put(key, value);
         }
     }
 
@@ -39,14 +39,14 @@ public class Demo {
     static class LocalCache {
         record Entry(String value, long expireAt) {}
         private final ConcurrentHashMap<String, Entry> map = new ConcurrentHashMap<>();
-        String get(String k) {
-            Entry e = map.get(k);
-            if (e == null) return null;
-            if (System.nanoTime() > e.expireAt()) return null; // 过期 = 没命中
-            return e.value();
+        String get(String key) {
+            Entry entry = map.get(key);
+            if (entry == null) return null;
+            if (System.nanoTime() > entry.expireAt()) return null; // 过期 = 没命中
+            return entry.value();
         }
-        void put(String k, String v, long ttlMillis) {
-            map.put(k, new Entry(v, System.nanoTime() + ttlMillis * 1_000_000L));
+        void put(String key, String value, long ttlMillis) {
+            map.put(key, new Entry(value, System.nanoTime() + ttlMillis * 1_000_000L));
         }
     }
 

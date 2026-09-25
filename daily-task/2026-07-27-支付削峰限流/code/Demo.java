@@ -137,8 +137,10 @@ public class Demo {
         var tokenBucket = new GlobalTokenBucket(thirdPartyLimit, thirdPartyLimit);
         var thirdParty = new ThirdPartyPayService();
 
-        // 记录出队顺序，最后校验 FIFO 用
-        List<Integer> dequeueOrder = java.util.Collections.synchronizedList(new ArrayList<>());
+        // 记录出队顺序，最后校验 FIFO 用。
+        // 下面这把锁保证「从队列取单」和「登记顺序」是一个整体动作，中间不会被别的工人插队。
+        List<Integer> dequeueOrder = new ArrayList<>();
+        Object dequeueLock = new Object();
         var stopSignal = new java.util.concurrent.atomic.AtomicBoolean(false);
 
         // ---------- 启动 4 个支付工人 ----------
@@ -152,12 +154,21 @@ public class Demo {
                             Thread.sleep(3); // 没抢到就小睡一下再试，别疯狂空转打爆"Redis"
                             continue;
                         }
-                        PayOrder order = queue.poll();
+                        // 取单 + 登记顺序必须一次做完：
+                        // 否则线程 A 取到 1 号单、还没来得及登记就被挂起，线程 B 取走 2 号单先登记，
+                        // 记录出来的顺序就成了 2、1，看着像「FIFO 被破坏」，其实只是登记时机不对。
+                        // （真实 Kafka 同一个分区通常只有一个消费者，天生有序；这里用多线程模拟多台机器，得自己保证。）
+                        PayOrder order;
+                        synchronized (dequeueLock) {
+                            order = queue.poll();
+                            if (order != null) {
+                                dequeueOrder.add(order.orderId()); // 登记出队顺序
+                            }
+                        }
                         if (order == null) {
                             continue; // 队列暂时空了（令牌白拿一张，无伤大雅）
                         }
-                        dequeueOrder.add(order.orderId()); // 登记出队顺序
-                        thirdParty.pay(order);             // 调"第三方"扣款（内部带幂等）
+                        thirdParty.pay(order); // 调"第三方"扣款（内部带幂等）
                     }
                 } catch (InterruptedException ignored) {
                     // 收工时被叫醒，正常退出
