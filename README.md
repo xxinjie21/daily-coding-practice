@@ -36,7 +36,7 @@ daily-coding-practice/
 
 - **必须使用原生技术栈**：涉及 Redis 就写真实 Redis 命令 / 客户端 API（Jedis），涉及 MySQL 就写真实 SQL（JDBC + `EXPLAIN`），涉及消息队列就写 Kafka 原生 API。**不允许用 `ConcurrentHashMap` 之类的内存对象仿真中间件。**
 - **代码精简、可读性优先**：只保留演示核心机制所必需的代码，不堆砌用不到的分支与配置；单个 `Demo.java` 尽量控制在 300 行以内，注释讲清"为什么"而不是逐行翻译代码。
-- **必须能跑通**：每个工程都经过编译 + 运行自检；依赖的中间件由该题的 `docker-compose.yml` 拉起。
+- **必须能编译通过**：每个工程都要过 `mvn -o -q compile`（Java 17 / UTF-8）。依赖的中间件由该题的 `docker-compose.yml` 拉起，能起容器时再跑一遍 `exec:java` 做运行自检。
 
 > 注：2026-09-27 已把此前的 41 个历史任务**全部回炉改造**完成（含 2026-09-27 当天），旧的单文件仿真版 `code/Demo.java` 已删除。
 > 改造后 41/41 离线编译通过；需要中间件的任务都附了 `docker-compose.yml`，在 `code/` 下 `docker compose up -d && mvn -q compile exec:java` 即可运行。
