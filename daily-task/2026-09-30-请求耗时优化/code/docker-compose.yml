@@ -1,0 +1,7 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: demo-redis-latency
+    ports:
+      # 宿主机的 6379 已被别的 Redis 占用，这里换 6380，避免冲突
+      - "6380:6379"
