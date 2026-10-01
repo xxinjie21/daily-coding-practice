@@ -1,0 +1,18 @@
+# 本机 3306 已被用户自有的 windows-mysql 容器占用，这里映射到宿主机 3307 避让
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: daily-mysql-multidb
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: demo
+    ports:
+      - "3307:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
