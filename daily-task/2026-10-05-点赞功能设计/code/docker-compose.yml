@@ -1,0 +1,41 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: demo-redis-feedlike
+    ports:
+      # 宿主机 6379 已被用户自有的 Redis 占用，这里换 6380
+      - "6380:6379"
+
+  mysql:
+    image: mysql:8.4
+    container_name: demo-mysql-feedlike
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: like_demo
+    ports:
+      # 宿主机 3306 已被用户自有的 MySQL 占用，这里换 3307
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-proot"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: demo-rabbit-feedlike
+    ports:
+      - "5673:5672"    # AMQP
+      - "15673:15672"  # 管理台，浏览器打开 http://localhost:15673（guest/guest）
+    # 必须挂命名卷：Docker Desktop for Windows 下不挂卷时 /var/lib/rabbitmq 权限异常，
+    # 会报 "Error when reading /var/lib/rabbitmq/.erlang.cookie: eacces" 直接退出
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  rabbitmq_data:
