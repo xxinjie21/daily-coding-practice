@@ -1,0 +1,7 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: demo-redis-forcelogout
+    ports:
+      # 宿主机 6379 已被用户自有的 Redis 占用，这里换 6380
+      - "6380:6379"
