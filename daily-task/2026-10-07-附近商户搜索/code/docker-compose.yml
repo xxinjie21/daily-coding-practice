@@ -1,0 +1,13 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: nearby-merchant-redis
+    # 宿主机 6379 已被用户自有的 windows-redis 占用，故映射到 6380
+    ports:
+      - "6380:6379"
+    command: ["redis-server", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
