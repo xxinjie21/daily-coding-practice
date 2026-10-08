@@ -1,0 +1,31 @@
+# 本题自检所需的三件套：MySQL（入库目标）、Redis（进度上报）、RabbitMQ（削峰）
+# 端口刻意避开用户本机已有的 windows-mysql(3306) / windows-redis(6379)
+services:
+  mysql:
+    image: mysql:8.4
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: demo
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "5673:5672"
+    # Docker Desktop for Windows 下不挂命名卷会因 /var/lib/rabbitmq 权限问题启动即退出
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  rabbitmq_data:
