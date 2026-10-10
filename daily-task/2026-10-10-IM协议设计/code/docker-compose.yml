@@ -1,0 +1,19 @@
+# 本题只需要一个消息队列：WebSocket 服务端收到消息后异步投给它做落库/路由。
+# 端口用 5673，避开用户本机可能已占用的 5672。
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "5673:5672"
+    # Docker Desktop for Windows 下不挂命名卷会因 /var/lib/rabbitmq 权限问题启动即退出
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    # 端口通了不代表 AMQP 已就绪（会 EOFException），用官方诊断命令做健康检查
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 12
+
+volumes:
+  rabbitmq_data:
