@@ -1,0 +1,12 @@
+# 本机 6379 已被用户自有的 windows-redis 容器占用（且需密码），故映射到 6380
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: sms-guard-redis
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
