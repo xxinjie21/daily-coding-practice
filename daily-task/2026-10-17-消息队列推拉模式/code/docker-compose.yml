@@ -1,0 +1,17 @@
+# 本题演示推/拉两种消息投递模式，只需要 RabbitMQ
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "5673:5672"
+    # Docker Desktop for Windows 下不挂命名卷会因 /var/lib/rabbitmq 权限问题启动即退出
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 12
+
+volumes:
+  rabbitmq_data:
